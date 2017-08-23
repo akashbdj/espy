@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native';
 import { Constants, MapView } from 'expo';
-import { MAP_STYLE_NIGHT }  from './config'
+import { MAP_STYLE_SILVER } from './configs/map-config'
 
 export default class Espy extends React.Component {
   state = {
     mapRegion: {
-      latitude: 19.1197,
-      longitude: 72.9051,
+      latitude: 18.9256,
+      longitude: 72.8242,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421
     }
@@ -22,11 +22,11 @@ export default class Espy extends React.Component {
       <View style={styles.container}>
         <MapView
           provider={MapView.PROVIDER_GOOGLE}
-          customMapStyle={MAP_STYLE_NIGHT}
+          customMapStyle={MAP_STYLE_SILVER}
           style={styles.map}
           region={this.state.mapRegion}
           onRegionChange={this._handleMapRegionChange}>
-            <MapView.Marker coordinate={{ latitude: 19.1197, longitude: 72.9051 }}>
+          <MapView.Marker coordinate={{ latitude: 18.9256, longitude: 72.8242 }}>
               <View style={styles.radius}>
                 <View style={styles.marker} />
               </View>
