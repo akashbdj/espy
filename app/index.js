@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native';
-import { Constants, MapView } from 'expo';
+import { Permissions, Location, Constants, MapView } from 'expo';
 import { MAP_STYLE_SILVER } from './configs/map-config'
 
 export default class Espy extends React.Component {
   state = {
+    location: { coords: { latitude: 18.9256, longitude: 72.8242 } },
     mapRegion: {
       latitude: 18.9256,
       longitude: 72.8242,
@@ -17,7 +18,30 @@ export default class Espy extends React.Component {
     this.setState({ mapRegion })
   }
 
-  render() {
+  componentDidMount () {
+    this._getLocationAsync()
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION)
+    if (status !== 'granted') {
+      this.setState({ location: null }) // TODO: handle this
+    }
+
+    let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true })
+
+    // Improve this code.
+    let mapRegion = {
+      ...this.state.mapRegion,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    }
+    this.setState({ location, mapRegion })
+  }
+
+  render () {
+    let { latitude, longitude } = this.state.location.coords
+
     return (
       <View style={styles.container}>
         <MapView
@@ -26,7 +50,7 @@ export default class Espy extends React.Component {
           style={styles.map}
           region={this.state.mapRegion}
           onRegionChange={this._handleMapRegionChange}>
-          <MapView.Marker coordinate={{ latitude: 18.9256, longitude: 72.8242 }}>
+          <MapView.Marker coordinate={{ latitude, longitude }}>
               <View style={styles.radius}>
                 <View style={styles.marker} />
               </View>
