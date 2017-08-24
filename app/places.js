@@ -23,7 +23,7 @@ const GooglePlacesInput = () => {
                 return ''; // text input default value
             }}
             query={{
-                key: 'AIzaSyCRBjU3Fqjv4Fm0xys-DRbiFE1tpXbqZ08',
+                key: '',
                 language: 'en'
             }}
             styles={{
