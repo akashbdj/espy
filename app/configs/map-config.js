@@ -132,7 +132,7 @@ export const MAP_STYLE_SILVER = [{
 }, {
     "featureType": "water",
     "elementType": "geometry",
-    "stylers": [{ "color": "#c9c9c9" }]
+    "stylers": [{ "color": "#d6e2e6" }]
 }, {
     "featureType": "water",
     "elementType": "labels.text.fill",

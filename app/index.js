@@ -3,7 +3,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Permissions, Location, Constants, MapView } from 'expo';
 import { MAP_STYLE_SILVER } from './configs/map-config'
 
+const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
+
 export default class Espy extends React.Component {
+  
   state = {
     location: { coords: { latitude: 18.9256, longitude: 72.8242 } },
     mapRegion: {
@@ -18,23 +21,16 @@ export default class Espy extends React.Component {
     this.setState({ mapRegion })
   }
 
-  componentDidMount () {
-    this._getLocationAsync()
+  componentWillMount() {
+    Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged);
   }
 
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION)
-    if (status !== 'granted') {
-      this.setState({ location: null }) // TODO: handle this
-    }
-
-    let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true })
-
-    // Improve this code.
+  locationChanged = (location) => {
     let mapRegion = {
-      ...this.state.mapRegion,
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.05,
     }
     this.setState({ location, mapRegion })
   }
@@ -45,6 +41,12 @@ export default class Espy extends React.Component {
     return (
       <View style={styles.container}>
         <MapView
+          showsMyLocationButton={true}
+          showsPointsOfInterest={true}
+          showsScale={true}
+          toolbarEnabled={true}
+          legalLabelInsets={{ top: 0, bottom: 0, right: 0, left: 0 }}
+          showsUserLocation={true}
           provider={MapView.PROVIDER_GOOGLE}
           customMapStyle={MAP_STYLE_SILVER}
           style={styles.map}
@@ -93,3 +95,27 @@ const styles = StyleSheet.create({
     bottom: 0
   }
 });
+
+
+
+
+// componentDidMount() {
+//   this._getLocationAsync()
+// }
+
+// _getLocationAsync = async () => {
+//   let { status } = await Permissions.askAsync(Permissions.LOCATION)
+//   if (status !== 'granted') {
+//     this.setState({ location: null }) // TODO: handle this
+//   }
+
+//   let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true })
+
+//   // Improve this code.
+//   let mapRegion = {
+//     ...this.state.mapRegion,
+//     latitude: location.coords.latitude,
+//     longitude: location.coords.longitude,
+//   }
+//   this.setState({ location, mapRegion })
+// }
