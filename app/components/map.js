@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Permissions, Location, MapView } from 'expo'
 import { MAP_STYLE_SILVER } from '../configs/map-config'
-import GooglePlacesInput from './location-search'
+import LocationSearch from './location-search'
 
 const GEOLOCATION_OPTIONS = {
     enableHighAccuracy: true,
@@ -52,7 +52,7 @@ export default class Map extends Component {
 
         return (
             <View style={styles.container}>
-                <GooglePlacesInput onLocationSelect={this.handleLocationSelect} />
+                <LocationSearch onLocationSelect={this.handleLocationSelect} />
                 <MapView
                     showsUserLocation
                     followsUserLocation
