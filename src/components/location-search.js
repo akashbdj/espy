@@ -29,7 +29,7 @@ export default (props) => {
                 fetchDetails={true}
                 renderDescription={(row) => row.description}
                 onPress={props.onLocationSelect}
-                query={{ key: 'AIzaSyCRBjU3Fqjv4Fm0xys-DRbiFE1tpXbqZ08', language: 'en' }}
+                query={{ key: '', language: 'en' }}
                 nearbyPlacesAPI='GooglePlacesSearch'
                 GooglePlacesSearchQuery={{ rankby: 'distance', types: 'food' }}
                 debounce={200}

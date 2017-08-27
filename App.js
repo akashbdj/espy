@@ -1,2 +1,2 @@
-import Espy from './app/index'
+import Espy from './src'
 export default Espy
