@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Permissions, Location, MapView } from 'expo'
-import { MAP_STYLE_SILVER } from '../configs/map-config'
-import LocationSearch from './location-search'
+import { MAP_STYLE_SILVER } from 'espy/configs/map-config'
+import LocationSearch from 'espy/components/location-search'
 
 const GEOLOCATION_OPTIONS = {
     enableHighAccuracy: true,

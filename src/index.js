@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
-import Map from './components/map'
+import Map from 'espy/components/map'
 
 export default (props) => {
     return (

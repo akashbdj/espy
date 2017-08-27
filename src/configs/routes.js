@@ -1,8 +1,8 @@
 import React from 'react'
 import { StackNavigator } from 'react-navigation'
 
-import LocationSearch from '../components/location-search'
-import Map from '../components/map'
+import LocationSearch from 'espy/components/location-search'
+import Map from 'espy/components/map'
 
 export const HomeStack = StackNavigator({
     Search: { screen: LocationSearch },

@@ -1,8 +1,20 @@
 {
-  "presets": ["babel-preset-expo"],
-  "env": {
-    "development": {
-      "plugins": ["transform-react-jsx-source"]
+    "presets": ["babel-preset-expo"],
+    "plugins": [
+        [
+            "module-resolver",
+            {
+                "root": ["./src"],
+                "extensions": [".js"],
+                "alias": {
+                    "espy": "./src"
+                }
+            }
+        ]
+    ],
+    "env": {
+        "development": {
+            "plugins": ["transform-react-jsx-source"]
+        }
     }
-  }
 }
