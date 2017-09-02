@@ -1,0 +1,8 @@
+{
+  "name": "espy",
+  "version": "1.0.0",
+  "description": "espy backend",
+  "main": "index.js",
+  "author": "akashbdj",
+  "license": "MIT"
+}
