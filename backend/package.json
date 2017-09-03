@@ -1,8 +1,25 @@
 {
-  "name": "espy",
-  "version": "1.0.0",
-  "description": "espy backend",
-  "main": "index.js",
-  "author": "akashbdj",
-  "license": "MIT"
+    "name": "espy",
+    "version": "1.0.0",
+    "description": "espy backend",
+    "main": "index.js",
+    "author": "akashbdj",
+    "license": "MIT",
+    "scripts": {
+        "start": "babel-node src/index.js"
+    },
+    "dependencies": {
+        "apollo-server-express": "^1.1.2",
+        "body-parser": "^1.17.2",
+        "express": "^4.15.4",
+        "graphql": "^0.11.2",
+        "graphql-tools": "^1.2.2"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.0",
+        "babel-eslint": "^7.2.3",
+        "babel-preset-es2015": "^6.24.1",
+        "eslint": "^4.6.0"
+    }
 }

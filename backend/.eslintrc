@@ -1,0 +1,30 @@
+{
+    "parser": "babel-eslint",
+    "env": { "node": true, "es6": true },
+    "plugins": [],
+    "extends": [],
+    "rules": {
+        "one-var": ["error", "never"],
+        "camelcase": [2, { "properties": "never" }],
+        "no-cond-assign": "error",
+        "quote-props": ["error", "as-needed"],
+        "no-dupe-keys": "error",
+        "no-dupe-args": "error",
+        "no-undef": "error",
+        "no-mixed-spaces-and-tabs": "error",
+        "semi-spacing": [2, { "before": false, "after": true }],
+        "space-before-blocks": [2, "always"],
+        "space-before-function-paren": [2, "always"],
+        "keyword-spacing": [2],
+        "indent": [2, 4, { "SwitchCase": 1 }],
+        "no-useless-return": [2],
+        "eqeqeq": [2, "smart"],
+        "guard-for-in": "error",
+        "line-comment-position": ["error", { "position": "above" }],
+        "no-multi-assign": "error",
+        "arrow-spacing": "error",
+        "no-duplicate-imports": ["error"],
+        "no-var": "error",
+        "arrow-parens": [2, "always"]
+    }
+}
