@@ -25,6 +25,7 @@
         "arrow-spacing": "error",
         "no-duplicate-imports": ["error"],
         "no-var": "error",
-        "arrow-parens": [2, "always"]
+        "arrow-parens": [2, "always"],
+        "no-unexpected-multiline": "error"
     }
 }
