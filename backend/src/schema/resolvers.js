@@ -1,18 +1,48 @@
-const person = [
-    {
-        id: 1,
-        name: 'Nishant',
-        age: 25
-    },
-    {
-        id: 2,
-        name: 'Akash',
-        age: 25
-    }
-]
+const MongoClient = require('mongodb').MongoClient
+const url = 'mongodb://127.0.0.1:27017/espy'
+
+const connectToDB = async (url = url) => await MongoClient.connect(url)
 
 export default {
     Query: {
-        allPerson: () => person
+        allPeople: () => [],
+
+        async getPeopleNearPerson (_, { id, distance = 1000 * 1000 }) {
+            const db = await connectToDB()
+
+            const people = db.collection('people')
+            const person = await people.findOne({ id })
+
+            return people
+                .find({
+                    loc: {
+                        $near: {
+                            $geometry: person.loc,
+                            $maxDistance: distance
+                        }
+                    }
+                })
+                .toArray()
+        }
+    },
+
+    Mutation: {
+        async addPersonLocation (_, { id, lat, long }) {
+            const db = await connectToDB()
+            const people = db.collection('people')
+
+            people.insert(
+                {
+                    id: id,
+                    loc: {
+                        type: 'Point',
+                        coordinates: [lat, long]
+                    }
+                },
+                () => db.close()
+            )
+
+            return { id, lat, long }
+        }
     }
 }

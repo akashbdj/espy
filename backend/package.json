@@ -13,7 +13,8 @@
         "body-parser": "^1.17.2",
         "express": "^4.15.4",
         "graphql": "^0.11.2",
-        "graphql-tools": "^1.2.2"
+        "graphql-tools": "^1.2.2",
+        "mongodb": "^2.2.33"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",

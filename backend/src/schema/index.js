@@ -4,12 +4,21 @@ import resolvers from './resolvers'
 const typeDefs = `
   type Person {
     id: ID!
-    name: String!
-    age: Int!
+    lat: Float!
+    long: Float!
   }
 
   type Query {
-    allPerson: [Person!]!
+    allPeople: [Person]!,
+    getPeopleNearPerson(id: String!, distance: Int): [Person]!
+  }
+
+  type Mutation {
+    addPersonLocation (
+      id: ID!
+      lat: Float!
+      long: Float!
+    ): Person
   }
 `
 
