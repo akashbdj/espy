@@ -6,7 +6,7 @@
     "author": "akashbdj",
     "license": "MIT",
     "scripts": {
-        "start": "babel-node src/index.js"
+        "start": "nodemon --exec babel-node src/index.js"
     },
     "dependencies": {
         "apollo-server-express": "^1.2.0",
@@ -21,6 +21,7 @@
         "babel-core": "^6.26.0",
         "babel-eslint": "^8.0.2",
         "babel-preset-env": "^1.6.1",
-        "eslint": "^4.11.0"
+        "eslint": "^4.11.0",
+        "nodemon": "^1.12.1"
     }
 }
