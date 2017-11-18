@@ -1,13 +1,13 @@
 const MongoClient = require('mongodb').MongoClient
-const url = 'mongodb://127.0.0.1:27017/espy'
+const URL = 'mongodb://127.0.0.1:27017/espy'
 
-const connectToDB = async (url = url) => await MongoClient.connect(url)
+const connectToDB = async (url = URL) => await MongoClient.connect(url)
 
 export default {
     Query: {
         allPeople: () => [],
 
-        async getPeopleNearPerson (_, { id, distance = 1000 * 1000 }) {
+        async getPeopleNearPerson (_, { id, distance = 1000 * 5 }) {
             const db = await connectToDB()
 
             const people = db.collection('people')
