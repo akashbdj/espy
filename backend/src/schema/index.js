@@ -9,7 +9,6 @@ const typeDefs = `
   }
 
   type Query {
-    allPeople: [Person]!,
     getPeopleNearPerson(id: String!, distance: Int): [Person]!
   }
 

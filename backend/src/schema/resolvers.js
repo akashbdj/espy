@@ -5,8 +5,6 @@ const connectToDB = async (url = URL) => await MongoClient.connect(url)
 
 export default {
     Query: {
-        allPeople: () => [],
-
         async getPeopleNearPerson (_, { id, distance = 1000 * 5 }) {
             const db = await connectToDB()
 
@@ -36,7 +34,7 @@ export default {
                     id: id,
                     loc: {
                         type: 'Point',
-                        coordinates: [lat, long]
+                        coordinates: [long, lat]
                     }
                 },
                 () => db.close()
