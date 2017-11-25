@@ -4,13 +4,16 @@ import { Permissions, Location, MapView } from 'expo'
 import { MAP_STYLE_SILVER } from 'espy/configs/map-config'
 import LocationSearch from 'espy/components/location-search'
 
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
+
 const GEOLOCATION_OPTIONS = {
     enableHighAccuracy: true,
     timeout: 20000,
     maximumAge: 1000
 }
 
-export default class Map extends Component {
+class Map extends Component {
     state = {
         userLocation: { latitude: 18.9256, longitude: 72.8242 },
         mapRegion: {
@@ -106,11 +109,14 @@ const styles = StyleSheet.create({
     }
 })
 
-// onRegionChangeComplete
-// onMarkerPress
-// onMarkerSelect
-// onCalloutPress
+const QUERY = gql`
+    query {
+        getPeopleNearPerson(id: "Delhi") {
+            id
+            lat
+            long
+        }
+    }
+`
 
-// <View style={styles.radius}>
-// <View style={styles.marker} />
-// </View>
+export default graphql(QUERY)(Map)

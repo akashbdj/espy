@@ -2,10 +2,11 @@ const MongoClient = require('mongodb').MongoClient
 const URL = 'mongodb://127.0.0.1:27017/espy'
 
 const connectToDB = async (url = URL) => await MongoClient.connect(url)
+const getPersonCoordinates = (person) => person.loc.coordinates
 
 export default {
     Query: {
-        async getPeopleNearPerson (_, { id, distance = 1000 * 5 }) {
+        async getPeopleNearPerson (_, { id, distance = 1000 * 50 }) {
             const db = await connectToDB()
 
             const people = db.collection('people')
@@ -14,7 +15,7 @@ export default {
             return people
                 .find({
                     loc: {
-                        $near: {
+                        $nearSphere: {
                             $geometry: person.loc,
                             $maxDistance: distance
                         }
@@ -22,6 +23,11 @@ export default {
                 })
                 .toArray()
         }
+    },
+
+    Person: {
+        lat: (person) => getPersonCoordinates(person)[1],
+        long: (person) => getPersonCoordinates(person)[0]
     },
 
     Mutation: {
