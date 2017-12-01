@@ -9,7 +9,7 @@ const typeDefs = `
   }
 
   type Query {
-    getPeopleNearPerson(id: String!, distance: Int): [Person]!
+    getPeopleNearPerson(id: ID!, distance: Int): [Person]!
   }
 
   type Mutation {

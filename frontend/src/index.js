@@ -11,7 +11,7 @@ import Map from 'espy/components/map'
 
 const client = new ApolloClient({
     link: new HttpLink({
-        uri: 'http://localhost:3000/graphql',
+        uri: 'http://ae652a9b.ngrok.io/graphql',
         opts: {
             credentials: 'same-origin',
             mode: 'no-cors'

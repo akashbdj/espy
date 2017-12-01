@@ -4,7 +4,7 @@ import { Permissions, Location, MapView } from 'expo'
 import { MAP_STYLE_SILVER } from 'espy/configs/map-config'
 import LocationSearch from 'espy/components/location-search'
 
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const GEOLOCATION_OPTIONS = {
@@ -37,7 +37,12 @@ class Map extends Component {
             longitudeDelta: 0.05
         }
         let userLocation = { latitude, longitude }
-        this.setState({ userLocation, mapRegion })
+        this.setState({ userLocation, mapRegion }, () => {
+            this.props
+                .storePersonLocation({ id: 'Stockholm', lat: 59.3293, long: 18.0686 })
+                .then((response) => console.log('respone : ', response))
+                .catch((e) => console.log('error: ', e))
+        })
     }
 
     handleMapRegionChange = (mapRegion) => {
@@ -46,7 +51,8 @@ class Map extends Component {
 
     handleLocationSelect = (data, details) => {
         let { description } = data
-        let { geometry } = details
+        let { geometry: { location: { lat, lng } } } = details
+
         // TODO: place marker using this info.
     }
 
@@ -64,7 +70,7 @@ class Map extends Component {
                     customMapStyle={MAP_STYLE_SILVER}
                     style={styles.map}
                     region={mapRegion}
-                    onRegionChange={this.handleMapRegionChange}
+                    onRegionChangeComplete={this.handleMapRegionChange}
                     showsScale
                     showsCompass
                     showsPointsOfInterest
@@ -109,9 +115,14 @@ const styles = StyleSheet.create({
     }
 })
 
-const QUERY = gql`
-    query {
-        getPeopleNearPerson(id: "Delhi") {
+const storePersonLocationConfig = {
+    props: ({ ownProps, mutate }) => ({
+        storePersonLocation: ({ id, lat, long }) => mutate({ variables: { id, lat, long } })
+    })
+}
+const storePersonLocation = gql`
+    mutation addPersonLocation($id: ID!, $lat: Float!, $long: Float!) {
+        addPersonLocation(id: $id, lat: $lat, long: $long) {
             id
             lat
             long
@@ -119,4 +130,4 @@ const QUERY = gql`
     }
 `
 
-export default graphql(QUERY)(Map)
+export default compose(graphql(storePersonLocation, storePersonLocationConfig))(Map)
