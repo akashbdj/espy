@@ -7,62 +7,31 @@ import LocationSearch from 'espy/components/location-search'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
-const GEOLOCATION_OPTIONS = {
-    enableHighAccuracy: true,
-    timeout: 20000,
-    maximumAge: 1000
-}
-
 class Map extends Component {
-    state = {
-        userLocation: { latitude: 18.9256, longitude: 72.8242 },
-        mapRegion: {
-            latitude: 18.9256,
-            longitude: 72.8242,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-        }
-    }
-
-    componentWillMount () {
-        Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged)
-    }
-
-    locationChanged = (location) => {
-        let { latitude, longitude } = location.coords
-        let mapRegion = {
-            latitude,
-            longitude,
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.05
-        }
-        let userLocation = { latitude, longitude }
-        this.setState({ userLocation, mapRegion }, () => {
-            this.props
-                .storePersonLocation({ id: 'Stockholm', lat: 59.3293, long: 18.0686 })
-                .then((response) => console.log('respone : ', response))
-                .catch((e) => console.log('error: ', e))
-        })
-    }
-
-    handleMapRegionChange = (mapRegion) => {
-        this.setState({ mapRegion })
-    }
-
     handleLocationSelect = (data, details) => {
         let { description } = data
         let { geometry: { location: { lat, lng } } } = details
-
-        // TODO: place marker using this info.
+        this.props.onLocationChange({
+            latitude: lat,
+            longitude: lng,
+            description
+        })
     }
 
     render () {
-        let { userLocation, mapRegion } = this.state
+        let {
+            userLocation,
+            mapRegion,
+            peopleNearLocation,
+            nearLocationError,
+            nearLocationLoading
+        } = this.props
 
         return (
             <View style={styles.container}>
                 <LocationSearch onLocationSelect={this.handleLocationSelect} />
-                <MapView
+                <MapView.Animated
+                    ref={(map) => (this.mapComp = map)}
                     showsUserLocation
                     followsUserLocation
                     showsMyLocationButton
@@ -70,7 +39,9 @@ class Map extends Component {
                     customMapStyle={MAP_STYLE_SILVER}
                     style={styles.map}
                     region={mapRegion}
-                    onRegionChangeComplete={this.handleMapRegionChange}
+                    onRegionChangeComplete={() => {
+                        /* TODO: Check if even needed */
+                    }}
                     showsScale
                     showsCompass
                     showsPointsOfInterest
@@ -78,8 +49,16 @@ class Map extends Component {
                     zoomEnabled
                     loadingEnabled
                 >
+                    {peopleNearLocation.map((person, index) => (
+                        <MapView.Marker
+                            key={index}
+                            coordinate={{ latitude: person.latitude, longitude: person.longitude }}
+                            title={person.id}
+                            description={'Hahaha Markers everywhere!'}
+                        />
+                    ))}
                     <MapView.Marker coordinate={userLocation} />
-                </MapView>
+                </MapView.Animated>
             </View>
         )
     }
@@ -115,19 +94,30 @@ const styles = StyleSheet.create({
     }
 })
 
-const storePersonLocationConfig = {
-    props: ({ ownProps, mutate }) => ({
-        storePersonLocation: ({ id, lat, long }) => mutate({ variables: { id, lat, long } })
-    })
+const getPeopleNearLocationConfig = {
+    options: ({ selectedLocation: { latitude, longitude } }) => ({
+        variables: { longitude, latitude }
+    }),
+    props: ({ ownProps, data: { error, loading, getPeopleNearLocation = [] } }) => {
+        let peopleNearLocation = getPeopleNearLocation.map(({ latitude, longitude, id }) => {
+            return { latitude, longitude, id }
+        })
+        return {
+            nearLocationError: error,
+            nearLocationLoading: loading,
+            peopleNearLocation
+        }
+    }
 }
-const storePersonLocation = gql`
-    mutation addPersonLocation($id: ID!, $lat: Float!, $long: Float!) {
-        addPersonLocation(id: $id, lat: $lat, long: $long) {
+
+const getPeopleNearLocation = gql`
+    query getPeopleNearLocation($longitude: Float!, $latitude: Float!) {
+        getPeopleNearLocation(longitude: $longitude, latitude: $latitude) {
             id
-            lat
-            long
+            latitude
+            longitude
         }
     }
 `
 
-export default compose(graphql(storePersonLocation, storePersonLocationConfig))(Map)
+export default compose(graphql(getPeopleNearLocation, getPeopleNearLocationConfig))(Map)

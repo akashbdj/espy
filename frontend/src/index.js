@@ -7,11 +7,11 @@ import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
 
-import Map from 'espy/components/map'
+import MapWrapper from 'espy/components/map-wrapper'
 
 const client = new ApolloClient({
     link: new HttpLink({
-        uri: 'http://ae652a9b.ngrok.io/graphql',
+        uri: 'http://e7eb428e.ngrok.io/graphql',
         opts: {
             credentials: 'same-origin',
             mode: 'no-cors'
@@ -24,7 +24,7 @@ export default (props) => {
     return (
         <ApolloProvider client={client}>
             <View style={styles.container}>
-                <Map />
+                <MapWrapper />
             </View>
         </ApolloProvider>
     )

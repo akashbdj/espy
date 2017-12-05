@@ -5,6 +5,32 @@ const connectToDB = async (url = URL) => await MongoClient.connect(url)
 
 export default {
     Query: {
+        async getPeopleNearLocation (_, { latitude, longitude, distance = 1000 * 50 }) {
+            const db = await connectToDB()
+            const loc = {
+                type: 'Point',
+                coordinates: [longitude, latitude]
+            }
+
+            const people = db.collection('people')
+
+            const nearestPeople = await people
+                .find({
+                    loc: {
+                        $nearSphere: {
+                            $geometry: loc,
+                            $maxDistance: distance
+                        }
+                    }
+                })
+                .toArray()
+
+            return nearestPeople.map((person) => {
+                const { id, loc: { coordinates: [longitude, latitude] } } = person
+                return { id, longitude, latitude }
+            })
+        },
+
         async getPeopleNearPerson (_, { id, distance = 1000 * 50 }) {
             const db = await connectToDB()
 
@@ -23,14 +49,14 @@ export default {
                 .toArray()
 
             return nearestPeople.map((person) => {
-                const { id, loc: { coordinates: [long, lat] } } = person
-                return { id, long, lat }
+                const { id, loc: { coordinates: [longitude, latitude] } } = person
+                return { id, longitude, latitude }
             })
         }
     },
 
     Mutation: {
-        async addPersonLocation (_, { id, long, lat }) {
+        async addPersonLocation (_, { id, longitude, latitude }) {
             const db = await connectToDB()
             const people = db.collection('people')
 
@@ -39,13 +65,13 @@ export default {
                     id: id,
                     loc: {
                         type: 'Point',
-                        coordinates: [long, lat]
+                        coordinates: [longitude, latitude]
                     }
                 },
                 () => db.close()
             )
 
-            return { id, long, lat }
+            return { id, longitude, latitude }
         }
     }
 }
