@@ -4,22 +4,17 @@ import {
     View,
     TextInput,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     StyleSheet,
+    TouchableWithoutFeedback,
     Keyboard
 } from 'react-native'
 
 export default class Login extends Component {
     componentDidMount () {}
 
-    onSubmit = (e) => {
+    onPress = (e) => {
         const { navigation: { navigate } } = this.props
         navigate('Map')
-    }
-
-    onSignUpClick = (e) => {
-        const { navigation: { navigate } } = this.props
-        navigate('SignUp')
     }
 
     onChangeText = (e) => {
@@ -30,6 +25,24 @@ export default class Login extends Component {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <View style={styles.container}>
+                    <TextInput
+                        autoFocus
+                        clearButtonMode={'unless-editing'}
+                        autoCorrect={false}
+                        style={styles.inputBox}
+                        onChangeText={this.onChangeText}
+                        placeholder={'Name'}
+                        placeholderTextColor={'rgb(126, 137, 155)'}
+                    />
+                    <TextInput
+                        autoCapitalize={'none'}
+                        clearButtonMode={'unless-editing'}
+                        autoCorrect={false}
+                        style={styles.inputBox}
+                        onChangeText={this.onChangeText}
+                        placeholder={'Username'}
+                        placeholderTextColor={'rgb(126, 137, 155)'}
+                    />
                     <TextInput
                         keyboardType={'email-address'}
                         autoCapitalize={'none'}
@@ -50,15 +63,9 @@ export default class Login extends Component {
                         placeholder={'Password'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
-                    <TouchableOpacity style={styles.button} onPress={this.onSubmit}>
-                        <Text style={styles.login}>Sign In</Text>
+                    <TouchableOpacity style={styles.button} onPress={this.onPress}>
+                        <Text>Register</Text>
                     </TouchableOpacity>
-                    <View style={styles.registerContainer}>
-                        <Text style={{ color: 'rgb(126, 137, 155)' }}>Don't have an account? </Text>
-                        <TouchableOpacity onPress={this.onSignUpClick}>
-                            <Text>Sign Up</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
             </TouchableWithoutFeedback>
         )
@@ -79,16 +86,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderBottomColor: 'rgb(230, 237, 244)',
         borderBottomWidth: 1,
-        marginBottom: 15
+        marginBottom: 20
     },
     button: {
         alignItems: 'center',
-        padding: 10,
-        marginBottom: 5
-    },
-    registerContainer: {
-        justifyContent: 'center',
-        flexDirection: 'row'
-    },
-    register: {}
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        padding: 10
+    }
 })
