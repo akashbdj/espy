@@ -52,7 +52,10 @@ class Map extends Component {
                     {peopleNearLocation.map((person, index) => (
                         <MapView.Marker
                             key={index}
-                            coordinate={{ latitude: person.latitude, longitude: person.longitude }}
+                            coordinate={{
+                                latitude: person.latitude,
+                                longitude: person.longitude
+                            }}
                             title={person.id}
                             description={'Hahaha Markers everywhere!'}
                         />

@@ -9,6 +9,10 @@
         "orientation": "portrait",
         "primaryColor": "#cccccc",
         "icon": "./assets/icons/app-icon.png",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "cover"
+        },
         "loading": {
             "icon": "./assets/icons/loading-icon.png",
             "hideExponentText": false
