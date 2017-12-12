@@ -10,15 +10,22 @@ import {
 } from 'react-native'
 
 export default class Login extends Component {
-    componentDidMount () {}
-
-    onPress = (e) => {
-        const { navigation: { navigate } } = this.props
-        navigate('Map')
+    constructor (props) {
+        super(props)
+        this.state = { name: '', username: '', email: '', password: '' }
     }
 
-    onChangeText = (e) => {
-        console.log('onChangeText : ', e)
+    onPress = () => {
+        const { name, email, username, password } = this.state
+        if (!name) {
+        }
+
+        // const { navigation: { navigate } } = this.props
+        // navigate('Map')
+    }
+
+    onCredentialChange = (type, text) => {
+        this.setState({ [type]: text })
     }
 
     render () {
@@ -30,7 +37,7 @@ export default class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         autoCorrect={false}
                         style={styles.inputBox}
-                        onChangeText={this.onChangeText}
+                        onChangeText={(text) => this.onCredentialChange('name', text)}
                         placeholder={'Name'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
@@ -39,7 +46,7 @@ export default class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         autoCorrect={false}
                         style={styles.inputBox}
-                        onChangeText={this.onChangeText}
+                        onChangeText={(text) => this.onCredentialChange('username', text)}
                         placeholder={'Username'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
@@ -49,7 +56,7 @@ export default class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         autoCorrect={false}
                         style={styles.inputBox}
-                        onChangeText={this.onChangeText}
+                        onChangeText={(text) => this.onCredentialChange('email', text)}
                         placeholder={'Email'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
@@ -59,7 +66,7 @@ export default class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         secureTextEntry
                         style={styles.inputBox}
-                        onChangeText={this.onChangeText}
+                        onChangeText={(text) => this.onCredentialChange('password', text)}
                         placeholder={'Password'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />

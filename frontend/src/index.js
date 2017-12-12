@@ -7,12 +7,12 @@ import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
 
-import MapWrapper from 'espy/components/map-wrapper'
+import MapWrapper from 'espy/components/map/map-wrapper'
 import RootNavigator from 'espy/routes'
 
 const client = new ApolloClient({
     link: new HttpLink({
-        uri: 'http://f7c608ee.ngrok.io/graphql',
+        uri: 'http://e070189f.ngrok.io/graphql',
         opts: {
             credentials: 'same-origin',
             mode: 'no-cors'

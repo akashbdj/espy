@@ -1,12 +1,12 @@
 import { StackNavigator } from 'react-navigation'
 
-import SignUp from 'espy/scenes/auth/signup'
-import Login from 'espy/scenes/auth/login'
-import MapWrapper from 'espy/components/map-wrapper'
+import SignUp from 'espy/components/auth/signup'
+import SignIn from 'espy/components/auth/signin'
+import MapWrapper from 'espy/components/map/map-wrapper'
 
 const RootNavigator = StackNavigator({
     Login: {
-        screen: Login
+        screen: SignIn
     },
     SignUp: {
         screen: SignUp
