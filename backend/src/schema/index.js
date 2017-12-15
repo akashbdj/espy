@@ -2,7 +2,7 @@ import { makeExecutableSchema } from 'graphql-tools'
 import resolvers from '../resolvers'
 
 const typeDefs = `
-	type Person {
+	type User {
 		id: ID!
 		name: String!
         email: String!
@@ -16,23 +16,22 @@ const typeDefs = `
 	}
 
 	type Query {
-        getPerson(email: String!): Person
-		getPeopleNearPerson(id: ID!, distance: Int): [Person]!
-		getPeopleNearLocation(longitude: Float!, latitude: Float!): [Person]! 
+        getUser(email: String!): User
+		getPeopleNearLocation(longitude: Float!, latitude: Float!): [User] 
 	}
 
 	type Mutation {
-        registerPerson(
+        registerUser(
             name: String!
             email: String!
             password: String!
-        ): Person
+        ): User!
 
-		addPersonLocation(
-            id: ID!
+		updateUserLocation(
+            email: String!
             latitude: Float!
             longitude: Float!
-		): Person
+		): User!
 	}
 `
 

@@ -1,74 +1,61 @@
 import bcrypt from 'bcrypt'
 
-const MongoClient = require('mongodb').MongoClient
-const URL = 'mongodb://127.0.0.1:27017/espy'
-
-const connectToDB = async (url = URL) => await MongoClient.connect(url)
-
 export default {
     Query: {
-        async getPerson (_, { email }) {
-            const db = await connectToDB()
-            const people = db.collection('people')
-
-            const person = await people.findOne({ email })
-            console.log('PERSON IN DB : ', person)
-            return person
+        async getUser (_, { email }, { DB }) {
+            return await DB.UserModel.findOne({ email })
         },
 
-        async getPeopleNearLocation (_, { latitude, longitude, distance = 1000 * 50 }) {
-            const db = await connectToDB()
+        async getPeopleNearLocation (_, args, { DB }) {
+            let { latitude, longitude, distance = 1000 * 50 } = args
             const loc = {
                 type: 'Point',
                 coordinates: [longitude, latitude]
             }
 
-            const people = db.collection('people')
-
-            const nearestPeople = await people
-                .find({
-                    loc: {
-                        $nearSphere: {
-                            $geometry: loc,
-                            $maxDistance: distance
-                        }
+            return await DB.UserModel.find({
+                loc: {
+                    $nearSphere: {
+                        $geometry: loc,
+                        $maxDistance: distance
                     }
-                })
-                .toArray()
-
-            return nearestPeople.map((person) => {
-                const { id, loc: { coordinates: [longitude, latitude] } } = person
-                return { id, longitude, latitude }
+                }
             })
         }
     },
 
-    Mutation: {
-        async addPersonLocation (_, { id, longitude, latitude }) {
-            const db = await connectToDB()
-            const people = db.collection('people')
+    User: {
+        location ({ loc }) {
+            if (!loc) return {}
+            return { longitude: loc.coordinates[0], latitude: loc.coordinates[1] }
+        }
+    },
 
-            people.insert(
+    Mutation: {
+        async updateUserLocation (_, { email, longitude, latitude }, { DB }) {
+            const user = await DB.UserModel.findOneAndUpdate(
+                { email },
                 {
-                    id: id,
                     loc: {
                         type: 'Point',
                         coordinates: [longitude, latitude]
                     }
                 },
-                () => db.close()
+                { upsert: true }
             )
 
-            return { id, longitude, latitude }
+            return user
         },
 
-        async registerPerson (_, { name, email, password }) {
-            const db = await connectToDB()
-            const people = db.collection('people')
+        async registerUser (_, { name, email, password }, { DB }) {
             const hashPassword = await bcrypt.hash(password, 12)
+            const user = await new DB.UserModel({
+                name,
+                email,
+                password: hashPassword
+            }).save()
 
-            people.insert({ name, email, password: hashPassword }, () => db.close())
-            return { name, email, password: hashPassword }
+            return { name, email, password }
         }
     }
 }
