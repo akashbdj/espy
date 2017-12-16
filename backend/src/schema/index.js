@@ -6,7 +6,6 @@ const typeDefs = `
 		id: ID!
 		name: String!
         email: String!
-        password: String!
 	    location: Location!
 	}
 
@@ -17,19 +16,28 @@ const typeDefs = `
 
 	type Query {
         getUser(email: String!): User
-		getPeopleNearLocation(longitude: Float!, latitude: Float!): [User] 
+		
+		getPeopleNearLocation(
+			longitude: Float!,
+			latitude: Float!
+		): [User]
 	}
 
 	type Mutation {
-        registerUser(
-            name: String!
-            email: String!
+        register(
+            name: String!,
+            email: String!,
             password: String!
-        ): User!
+		): User
+		
+		login(
+			email: String!,
+			password: String!
+		): User
 
 		updateUserLocation(
-            email: String!
-            latitude: Float!
+            email: String!,
+            latitude: Float!,
             longitude: Float!
 		): User!
 	}
