@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import schema from './schema'
 import DB from './models/db'
+import config from './config'
 
 const PORT = 3000
 let app = express()

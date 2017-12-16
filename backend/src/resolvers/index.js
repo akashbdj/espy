@@ -37,7 +37,7 @@ export default {
         async register (_, { name, email, password }, { DB }) {
             const existingUser = await DB.UserModel.findOne({ email })
             if (existingUser) {
-                return new Error('User with email address already exist')
+                return new Error('Email address already exist')
             }
 
             const hashPassword = await bcrypt.hash(password, 12)
