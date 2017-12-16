@@ -3,7 +3,13 @@ import bcrypt from 'bcrypt'
 export default {
     Query: {
         async getUser (_, { email }, { DB }) {
-            return await DB.UserModel.findOne({ email })
+            const user = await DB.UserModel.findOne({ email })
+
+            if (!user) {
+                return new Error('Email is not associated with any account')
+            }
+
+            return user
         },
 
         async getPeopleNearLocation (_, args, { DB }) {
