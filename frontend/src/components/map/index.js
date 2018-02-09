@@ -107,9 +107,10 @@ const getPeopleNearLocationConfig = {
         variables: { longitude, latitude }
     }),
     props: ({ ownProps, data: { error, loading, getPeopleNearLocation = [] } }) => {
-        let peopleNearLocation = getPeopleNearLocation.map(({ latitude, longitude, id }) => {
-            return { latitude, longitude, id }
-        })
+        let peopleNearLocation = getPeopleNearLocation.map(
+            ({ location: { latitude, longitude }, id }) => ({ latitude, longitude, id })
+        )
+
         return {
             nearLocationError: error,
             nearLocationLoading: loading,
@@ -122,8 +123,10 @@ const getPeopleNearLocation = gql`
     query getPeopleNearLocation($longitude: Float!, $latitude: Float!) {
         getPeopleNearLocation(longitude: $longitude, latitude: $latitude) {
             id
-            latitude
-            longitude
+            location {
+                latitude
+                longitude
+            }
         }
     }
 `

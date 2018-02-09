@@ -6,7 +6,7 @@ const typeDefs = `
 		id: ID!
 		name: String!
         email: String!
-	    location: Location!
+		location: Location!
 	}
 
 	type Location {

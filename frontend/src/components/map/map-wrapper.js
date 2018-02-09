@@ -68,9 +68,9 @@ class MapWrapper extends Component {
         }
 
         this.props
-            .storePersonLocation({ id: 'User', longitude, latitude })
+            .updateUserLocation({ email: 'akashbdj@gmail.com', longitude, latitude })
             .then((response) => {
-                let { latitude, longitude } = response.data.addPersonLocation
+                let { latitude, longitude } = response.data.updateUserLocation.location
                 let userLocation = { latitude, longitude }
                 let mapRegion = this.constructMapRegion(latitude, longitude)
                 this.setState({
@@ -80,7 +80,7 @@ class MapWrapper extends Component {
                     selectedLocation: selectedLocation || userLocation
                 })
             })
-            .catch((e) => console.log('ERRORR in [ADDPERSONLOCATION]: ', e))
+            .catch((e) => console.log('ERRORR in [[updateUserLocation]]: ', e))
     }
 
     constructMapRegion = (latitude, longitude) => {
@@ -118,21 +118,24 @@ class MapWrapper extends Component {
     }
 }
 
-const storePersonLocationConfig = {
+const updateUserLocationConfig = {
     props: ({ ownProps, mutate }) => ({
-        storePersonLocation: ({ id, latitude, longitude }) =>
-            mutate({ variables: { id, latitude, longitude } })
+        updateUserLocation: ({ email, latitude, longitude }) =>
+            mutate({ variables: { email, latitude, longitude } })
     })
 }
 
-const storePersonLocation = gql`
-    mutation addPersonLocation($id: ID!, $latitude: Float!, $longitude: Float!) {
-        addPersonLocation(id: $id, latitude: $latitude, longitude: $longitude) {
+const updateUserLocation = gql`
+    mutation updateUserLocation($email: String!, $latitude: Float!, $longitude: Float!) {
+        updateUserLocation(email: $email, latitude: $latitude, longitude: $longitude) {
             id
-            latitude
-            longitude
+            email
+            location {
+                latitude
+                longitude
+            }
         }
     }
 `
 
-export default graphql(storePersonLocation, storePersonLocationConfig)(MapWrapper)
+export default graphql(updateUserLocation, updateUserLocationConfig)(MapWrapper)

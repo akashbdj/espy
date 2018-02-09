@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-mongoose.connect('mongodb://127.0.0.1:27017/espy', { useMongoClient: true })
+mongoose.connect('mongodb://127.0.0.1:27017/espy')
 mongoose.Promise = global.Promise
 
 const { Schema } = mongoose
