@@ -68,7 +68,7 @@ class MapWrapper extends Component {
         }
 
         this.props
-            .updateUserLocation({ email: 'akashbdj@gmail.com', longitude, latitude })
+            .updateUserLocation({ email: '12@12.com', longitude, latitude })
             .then((response) => {
                 let { latitude, longitude } = response.data.updateUserLocation.location
                 let userLocation = { latitude, longitude }

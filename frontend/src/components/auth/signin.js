@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { SecureStore } from 'expo'
 import {
     Text,
     View,
@@ -11,23 +12,35 @@ import {
 
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import { Promise } from 'core-js'
 
 class Login extends Component {
     state = {
         email: '',
-        password: ''
+        password: '',
+        error: null
     }
 
-    onSubmit = (e) => {
+    onSubmit = async () => {
         const { loginMutation, navigation: { navigate } } = this.props
 
-        // navigate('Map')
+        const response = await loginMutation(this.state)
+        const { accessToken, refreshToken, success, error } = response.data.login
 
-        loginMutation(this.state)
+        if (!success) {
+            this.setState({ error })
+            return
+        }
+
+        Promise.all([
+            SecureStore.setItemAsync('accessToken', accessToken),
+            SecureStore.setItemAsync('refreshToken', refreshToken)
+        ])
             .then((response) => {
-                console.log(' LOGIN MUTATION RESPONSE : ', response)
+                console.log('TOKENS saved in SecureStore')
+                navigate('Map')
             })
-            .catch((e) => console.log(' ERROR IN LOGIN MUTATION: ', e))
+            .catch((e) => console.log('Couldnt save TOKENS in SecureStore', e))
     }
 
     onSignUpClick = (e) => {
@@ -35,12 +48,8 @@ class Login extends Component {
         navigate('SignUp')
     }
 
-    onEmailChange = (email) => {
-        this.setState({ email })
-    }
-
-    onPasswordChange = (password) => {
-        this.setState({ password })
+    onCredentialChange = (type, text) => {
+        this.setState({ [type]: text })
     }
 
     render () {
@@ -53,7 +62,7 @@ class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         autoCorrect={false}
                         style={styles.inputBox}
-                        onChangeText={this.onEmailChange}
+                        onChangeText={(text) => this.onCredentialChange('email', text)}
                         placeholder={'Email'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
@@ -63,7 +72,7 @@ class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         secureTextEntry
                         style={styles.inputBox}
-                        onChangeText={this.onPasswordChange}
+                        onChangeText={(text) => this.onCredentialChange('password', text)}
                         placeholder={'Password'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
@@ -71,7 +80,9 @@ class Login extends Component {
                         <Text style={styles.login}>Sign In</Text>
                     </TouchableOpacity>
                     <View style={styles.registerContainer}>
-                        <Text style={{ color: 'rgb(126, 137, 155)' }}>Don't have an account? </Text>
+                        <Text style={{ color: 'rgb(126, 137, 155)' }}>
+                            {"Don't have an account? "}
+                        </Text>
                         <TouchableOpacity onPress={this.onSignUpClick}>
                             <Text>Sign Up</Text>
                         </TouchableOpacity>
@@ -119,8 +130,15 @@ const loginMutationConfig = {
 const loginMutation = gql`
     mutation login($email: String!, $password: String!) {
         login(email: $email, password: $password) {
-            id
-            email
+            success
+            error
+            accessToken
+            refreshToken
+            user {
+                id
+                name
+                email
+            }
         }
     }
 `

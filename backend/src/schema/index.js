@@ -4,9 +4,9 @@ import resolvers from '../resolvers'
 const typeDefs = `
 	type User {
 		id: ID!
-		name: String!
-        email: String!
-		location: Location!
+		name: String
+        email: String
+		location: Location
 	}
 
 	type Location {
@@ -15,15 +15,19 @@ const typeDefs = `
 	}
 
 	type RegisterResponse {
-		id: ID!
-		accessToken: String!
-		refreshToken: String!
+		user: User
+		accessToken: String
+		refreshToken: String
+		success: Boolean!
+		error: String
 	}
 
 	type LoginResponse {
-		id: ID!
-		accessToken: String!
-		refreshToken: String!
+		user: User
+		accessToken: String
+		refreshToken: String
+		success: Boolean!
+		error: String
 	}
 
 	type Query {
@@ -40,12 +44,12 @@ const typeDefs = `
             name: String!,
             email: String!,
             password: String!
-		): RegisterResponse
+		): RegisterResponse!
 		
 		login(
 			email: String!,
 			password: String!
-		): User
+		): LoginResponse!
 
 		updateUserLocation(
             email: String!,

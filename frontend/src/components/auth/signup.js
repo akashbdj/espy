@@ -17,7 +17,13 @@ import { Promise } from 'core-js'
 class Register extends Component {
     constructor (props) {
         super(props)
-        this.state = { name: '', username: '', email: '', password: '' }
+        this.state = {
+            name: '',
+            username: '',
+            email: '',
+            password: '',
+            error: null
+        }
     }
 
     onPress = async () => {
@@ -25,13 +31,21 @@ class Register extends Component {
         const { registerMutation, navigation: { navigate } } = this.props
 
         const response = await registerMutation({ name, email, password })
-        const { accessToken, refreshToken } = response.data.register
+        const { accessToken, refreshToken, success, error } = response.data.register
+
+        if (!success) {
+            this.setState({ error })
+            return
+        }
 
         Promise.all([
             SecureStore.setItemAsync('accessToken', accessToken),
             SecureStore.setItemAsync('refreshToken', refreshToken)
         ])
-            .then((response) => console.log('TOKENS saved in SecureStore'))
+            .then((response) => {
+                console.log('TOKENS saved in SecureStore')
+                navigate('Map')
+            })
             .catch((e) => console.log('Couldnt save TOKENS in SecureStore', e))
     }
 
@@ -123,9 +137,15 @@ const registerMutationConfig = {
 const registerMutation = gql`
     mutation register($name: String!, $email: String!, $password: String!) {
         register(name: $name, email: $email, password: $password) {
-            id
+            success
+            error
             accessToken
             refreshToken
+            user {
+                id
+                name
+                email
+            }
         }
     }
 `
