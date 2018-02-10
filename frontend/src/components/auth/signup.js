@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { SecureStore } from 'expo'
 import {
     Text,
     View,
@@ -11,6 +12,7 @@ import {
 
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import { Promise } from 'core-js'
 
 class Register extends Component {
     constructor (props) {
@@ -18,17 +20,19 @@ class Register extends Component {
         this.state = { name: '', username: '', email: '', password: '' }
     }
 
-    onPress = () => {
+    onPress = async () => {
         const { name, email, username, password } = this.state
         const { registerMutation, navigation: { navigate } } = this.props
 
-        registerMutation({ name, email, password })
-            .then((response) => {
-                console.log(' REGISTER MUTATION RESPONSE : ', response)
-            })
-            .catch((e) => console.log(' ERROR IN REGISTER MUTATION: ', e))
+        const response = await registerMutation({ name, email, password })
+        const { accessToken, refreshToken } = response.data.register
 
-        // navigate('Map')
+        const accessTokenPromise = SecureStore.setItemAsync('accessToken', accessToken)
+        const refreshTokenPromise = SecureStore.setItemAsync('refreshToken', refreshToken)
+
+        Promise.all([accessTokenPromise, refreshTokenPromise])
+            .then((response) => console.log('TOKENS saved in SecureStore'))
+            .catch((e) => console.log('Couldnt save TOKENS in SecureStore ', e))
     }
 
     onCredentialChange = (type, text) => {
