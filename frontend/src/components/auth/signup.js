@@ -9,7 +9,10 @@ import {
     Keyboard
 } from 'react-native'
 
-export default class Login extends Component {
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
+
+class Register extends Component {
     constructor (props) {
         super(props)
         this.state = { name: '', username: '', email: '', password: '' }
@@ -17,10 +20,14 @@ export default class Login extends Component {
 
     onPress = () => {
         const { name, email, username, password } = this.state
-        if (!name) {
-        }
+        const { registerMutation, navigation: { navigate } } = this.props
 
-        // const { navigation: { navigate } } = this.props
+        registerMutation({ name, email, password })
+            .then((response) => {
+                console.log(' REGISTER MUTATION RESPONSE : ', response)
+            })
+            .catch((e) => console.log(' ERROR IN REGISTER MUTATION: ', e))
+
         // navigate('Map')
     }
 
@@ -101,3 +108,22 @@ const styles = StyleSheet.create({
         padding: 10
     }
 })
+
+const registerMutationConfig = {
+    props: ({ ownProps, mutate }) => ({
+        registerMutation: ({ name, email, password }) =>
+            mutate({ variables: { name, email, password } })
+    })
+}
+
+const registerMutation = gql`
+    mutation register($name: String!, $email: String!, $password: String!) {
+        register(name: $name, email: $email, password: $password) {
+            id
+            name
+            email
+        }
+    }
+`
+
+export default graphql(registerMutation, registerMutationConfig)(Register)

@@ -9,12 +9,25 @@ import {
     Keyboard
 } from 'react-native'
 
-export default class Login extends Component {
-    componentDidMount () {}
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
+
+class Login extends Component {
+    state = {
+        email: '',
+        password: ''
+    }
 
     onSubmit = (e) => {
-        const { navigation: { navigate } } = this.props
-        navigate('Map')
+        const { loginMutation, navigation: { navigate } } = this.props
+
+        // navigate('Map')
+
+        loginMutation(this.state)
+            .then((response) => {
+                console.log(' LOGIN MUTATION RESPONSE : ', response)
+            })
+            .catch((e) => console.log(' ERROR IN LOGIN MUTATION: ', e))
     }
 
     onSignUpClick = (e) => {
@@ -22,8 +35,12 @@ export default class Login extends Component {
         navigate('SignUp')
     }
 
-    onChangeText = (e) => {
-        console.log('onChangeText : ', e)
+    onEmailChange = (email) => {
+        this.setState({ email })
+    }
+
+    onPasswordChange = (password) => {
+        this.setState({ password })
     }
 
     render () {
@@ -36,7 +53,7 @@ export default class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         autoCorrect={false}
                         style={styles.inputBox}
-                        onChangeText={this.onChangeText}
+                        onChangeText={this.onEmailChange}
                         placeholder={'Email'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
@@ -46,7 +63,7 @@ export default class Login extends Component {
                         clearButtonMode={'unless-editing'}
                         secureTextEntry
                         style={styles.inputBox}
-                        onChangeText={this.onChangeText}
+                        onChangeText={this.onPasswordChange}
                         placeholder={'Password'}
                         placeholderTextColor={'rgb(126, 137, 155)'}
                     />
@@ -92,3 +109,20 @@ const styles = StyleSheet.create({
     },
     register: {}
 })
+
+const loginMutationConfig = {
+    props: ({ ownProps, mutate }) => ({
+        loginMutation: ({ email, password }) => mutate({ variables: { email, password } })
+    })
+}
+
+const loginMutation = gql`
+    mutation login($email: String!, $password: String!) {
+        login(email: $email, password: $password) {
+            id
+            email
+        }
+    }
+`
+
+export default graphql(loginMutation, loginMutationConfig)(Login)
