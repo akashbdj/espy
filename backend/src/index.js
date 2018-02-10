@@ -5,7 +5,7 @@ import schema from './schema'
 import DB from './models/db'
 import config from './config'
 
-const { SERVER_PORT, JWT_SECRET, END_POINT } = config
+const { SERVER_PORT, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, END_POINT } = config
 let app = express()
 
 app.use(
@@ -13,7 +13,7 @@ app.use(
     bodyParser.json(),
     graphqlExpress((req) => ({
         schema,
-        context: { DB, JWT_SECRET }
+        context: { DB, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET }
     }))
 )
 

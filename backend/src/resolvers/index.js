@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { createTokens } from '../auth'
 
 export default {
     Query: {
@@ -40,7 +41,11 @@ export default {
     },
 
     Mutation: {
-        async register (_, { name, email, password }, { DB }) {
+        async register (
+            _,
+            { name, email, password },
+            { DB, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET }
+        ) {
             const existingUser = await DB.UserModel.findOne({ email })
             if (existingUser) {
                 return new Error('Email address already exists')
@@ -53,7 +58,17 @@ export default {
                 password: hashPassword
             }).save()
 
-            return user
+            const { accessToken, refreshToken } = createTokens(
+                user,
+                JWT_ACCESS_SECRET,
+                `${JWT_REFRESH_SECRET}-${password}`
+            )
+
+            return {
+                id: user.id,
+                accessToken,
+                refreshToken
+            }
         },
 
         async login (_, { email, password }, { DB }) {

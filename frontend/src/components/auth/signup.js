@@ -120,8 +120,8 @@ const registerMutation = gql`
     mutation register($name: String!, $email: String!, $password: String!) {
         register(name: $name, email: $email, password: $password) {
             id
-            name
-            email
+            accessToken
+            refreshToken
         }
     }
 `

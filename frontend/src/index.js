@@ -12,7 +12,7 @@ import RootNavigator from 'espy/routes'
 
 const client = new ApolloClient({
     link: new HttpLink({
-        uri: 'http://50e79d5e.ngrok.io/graphql',
+        uri: 'http://ab9db2dc.ngrok.io/graphql',
         opts: {
             credentials: 'same-origin',
             mode: 'no-cors'

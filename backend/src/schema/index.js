@@ -14,6 +14,18 @@ const typeDefs = `
 		latitude: Float!
 	}
 
+	type RegisterResponse {
+		id: ID!
+		accessToken: String!
+		refreshToken: String!
+	}
+
+	type LoginResponse {
+		id: ID!
+		accessToken: String!
+		refreshToken: String!
+	}
+
 	type Query {
         getUser(email: String!): User
 		
@@ -28,7 +40,7 @@ const typeDefs = `
             name: String!,
             email: String!,
             password: String!
-		): User
+		): RegisterResponse
 		
 		login(
 			email: String!,
