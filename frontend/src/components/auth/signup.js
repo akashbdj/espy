@@ -27,12 +27,12 @@ class Register extends Component {
         const response = await registerMutation({ name, email, password })
         const { accessToken, refreshToken } = response.data.register
 
-        const accessTokenPromise = SecureStore.setItemAsync('accessToken', accessToken)
-        const refreshTokenPromise = SecureStore.setItemAsync('refreshToken', refreshToken)
-
-        Promise.all([accessTokenPromise, refreshTokenPromise])
+        Promise.all([
+            SecureStore.setItemAsync('accessToken', accessToken),
+            SecureStore.setItemAsync('refreshToken', refreshToken)
+        ])
             .then((response) => console.log('TOKENS saved in SecureStore'))
-            .catch((e) => console.log('Couldnt save TOKENS in SecureStore ', e))
+            .catch((e) => console.log('Couldnt save TOKENS in SecureStore', e))
     }
 
     onCredentialChange = (type, text) => {
