@@ -11,10 +11,12 @@ let app = express()
 app.use(
     END_POINT,
     bodyParser.json(),
-    graphqlExpress((req) => ({
-        schema,
-        context: { DB, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET }
-    }))
+    graphqlExpress((req) => {
+        return {
+            schema,
+            context: { DB, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET }
+        }
+    })
 )
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
