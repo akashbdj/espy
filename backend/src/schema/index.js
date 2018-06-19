@@ -4,14 +4,30 @@ import resolvers from '../resolvers'
 const typeDefs = `
 	type User {
 		id: ID!
-		name: String!
-        email: String!
-		location: Location!
+		name: String
+        email: String
+		location: Location
 	}
 
 	type Location {
 		longitude: Float!
 		latitude: Float!
+	}
+
+	type RegisterResponse {
+		user: User
+		accessToken: String
+		refreshToken: String
+		success: Boolean!
+		error: String
+	}
+
+	type LoginResponse {
+		user: User
+		accessToken: String
+		refreshToken: String
+		success: Boolean!
+		error: String
 	}
 
 	type Query {
@@ -28,12 +44,12 @@ const typeDefs = `
             name: String!,
             email: String!,
             password: String!
-		): User
+		): RegisterResponse!
 		
 		login(
 			email: String!,
 			password: String!
-		): User
+		): LoginResponse!
 
 		updateUserLocation(
             email: String!,

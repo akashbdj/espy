@@ -5,16 +5,18 @@ import schema from './schema'
 import DB from './models/db'
 import config from './config'
 
-const { SERVER_PORT, JWT_SECRET, END_POINT } = config
+const { SERVER_PORT, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, END_POINT } = config
 let app = express()
 
 app.use(
     END_POINT,
     bodyParser.json(),
-    graphqlExpress((req) => ({
-        schema,
-        context: { DB, JWT_SECRET }
-    }))
+    graphqlExpress((req) => {
+        return {
+            schema,
+            context: { DB, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET }
+        }
+    })
 )
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))

@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { createTokens } from '../auth'
 
 export default {
     Query: {
@@ -32,6 +33,7 @@ export default {
 
     User: {
         location ({ loc }) {
+            // TODO: do something about this!
             if (!loc) {
                 return new Error("Couldn't find user's location")
             }
@@ -40,10 +42,17 @@ export default {
     },
 
     Mutation: {
-        async register (_, { name, email, password }, { DB }) {
+        async register (
+            _,
+            { name, email, password },
+            { DB, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET }
+        ) {
             const existingUser = await DB.UserModel.findOne({ email })
             if (existingUser) {
-                return new Error('Email address already exists')
+                return {
+                    success: false,
+                    error: 'Email address already exists'
+                }
             }
 
             const hashPassword = await bcrypt.hash(password, 12)
@@ -53,21 +62,49 @@ export default {
                 password: hashPassword
             }).save()
 
-            return user
+            const { accessToken, refreshToken } = createTokens(
+                user,
+                JWT_ACCESS_SECRET,
+                `${JWT_REFRESH_SECRET}-${password}`
+            )
+
+            return {
+                success: true,
+                user,
+                accessToken,
+                refreshToken
+            }
         },
 
-        async login (_, { email, password }, { DB }) {
+        async login (_, { email, password }, { DB, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET }) {
             const user = await DB.UserModel.findOne({ email })
             if (!user) {
-                return new Error('Email is not associated with any account')
+                return {
+                    success: false,
+                    error: 'Email is not associated with any account'
+                }
             }
 
             const isValidPassword = await bcrypt.compare(password, user.password)
             if (!isValidPassword) {
-                return new Error('Credentials provided are wrong')
+                return {
+                    success: false,
+                    error: 'Credentials provided are wrong'
+                }
             }
 
-            return user
+            const { accessToken, refreshToken } = createTokens(
+                user,
+                JWT_ACCESS_SECRET,
+                `${JWT_REFRESH_SECRET}-${password}`
+            )
+
+            return {
+                success: true,
+                user,
+                accessToken,
+                refreshToken
+            }
         },
 
         async updateUserLocation (_, { email, longitude, latitude }, { DB }) {

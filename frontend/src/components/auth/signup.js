@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { SecureStore } from 'expo'
 import {
     Text,
     View,
@@ -9,19 +10,43 @@ import {
     Keyboard
 } from 'react-native'
 
-export default class Login extends Component {
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
+import { Promise } from 'core-js'
+
+class Register extends Component {
     constructor (props) {
         super(props)
-        this.state = { name: '', username: '', email: '', password: '' }
+        this.state = {
+            name: '',
+            username: '',
+            email: '',
+            password: '',
+            error: null
+        }
     }
 
-    onPress = () => {
+    onPress = async () => {
         const { name, email, username, password } = this.state
-        if (!name) {
+        const { registerMutation, navigation: { navigate } } = this.props
+
+        const response = await registerMutation({ name, email, password })
+        const { accessToken, refreshToken, success, error } = response.data.register
+
+        if (!success) {
+            this.setState({ error })
+            return
         }
 
-        // const { navigation: { navigate } } = this.props
-        // navigate('Map')
+        Promise.all([
+            SecureStore.setItemAsync('accessToken', accessToken),
+            SecureStore.setItemAsync('refreshToken', refreshToken)
+        ])
+            .then((response) => {
+                console.log('TOKENS saved in SecureStore')
+                navigate('Map')
+            })
+            .catch((e) => console.log('Couldnt save TOKENS in SecureStore', e))
     }
 
     onCredentialChange = (type, text) => {
@@ -101,3 +126,28 @@ const styles = StyleSheet.create({
         padding: 10
     }
 })
+
+const registerMutationConfig = {
+    props: ({ ownProps, mutate }) => ({
+        registerMutation: ({ name, email, password }) =>
+            mutate({ variables: { name, email, password } })
+    })
+}
+
+const registerMutation = gql`
+    mutation register($name: String!, $email: String!, $password: String!) {
+        register(name: $name, email: $email, password: $password) {
+            success
+            error
+            accessToken
+            refreshToken
+            user {
+                id
+                name
+                email
+            }
+        }
+    }
+`
+
+export default graphql(registerMutation, registerMutationConfig)(Register)
