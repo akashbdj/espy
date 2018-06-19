@@ -3,7 +3,8 @@ import { createTokens } from '../auth'
 
 export default {
     Query: {
-        async getUser (_, { email }, { DB }) {
+        async getUser (_, { email }, { DB, isLoggedIn }) {
+            console.log(' ISFUCKINGLOGGEDIN ', isLoggedIn)
             const user = await DB.UserModel.findOne({ email })
 
             if (!user) {
@@ -65,7 +66,7 @@ export default {
             const { accessToken, refreshToken } = createTokens(
                 user,
                 JWT_ACCESS_SECRET,
-                `${JWT_REFRESH_SECRET}-${password}`
+                `${JWT_REFRESH_SECRET}-${user.password}`
             )
 
             return {
@@ -96,7 +97,7 @@ export default {
             const { accessToken, refreshToken } = createTokens(
                 user,
                 JWT_ACCESS_SECRET,
-                `${JWT_REFRESH_SECRET}-${password}`
+                `${JWT_REFRESH_SECRET}-${user.password}`
             )
 
             return {
@@ -107,7 +108,8 @@ export default {
             }
         },
 
-        async updateUserLocation (_, { email, longitude, latitude }, { DB }) {
+        async updateUserLocation (_, { email, longitude, latitude }, { DB, isLoggedIn }) {
+            console.log('isLoggedIn :--------------< ', isLoggedIn, email)
             const user = await DB.UserModel.findOneAndUpdate(
                 { email },
                 {

@@ -12,7 +12,7 @@ import gql from 'graphql-tag'
 import MapWrapper from 'espy/components/map/map-wrapper'
 import RootNavigator from 'espy/routes'
 
-const httpLink = new HttpLink({ uri: 'http://56d0447f.ngrok.io/graphql' })
+const httpLink = new HttpLink({ uri: 'http://4bc01b9d.ngrok.io/graphql' })
 const authLink = setContext(async (_, { headers }) => {
     const accessToken = await SecureStore.getItemAsync('accessToken')
     const refreshToken = await SecureStore.getItemAsync('refreshToken')

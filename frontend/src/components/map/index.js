@@ -98,9 +98,9 @@ const styles = StyleSheet.create({
     }
 })
 
-/**
- *  GraphQL query specific code starts here
- *  Fetches all the people near selectedLocation
+/*
+    GraphQL query specific code starts here
+    Fetches all the people near selectedLocation
  */
 const getPeopleNearLocationConfig = {
     options: ({ selectedLocation: { latitude, longitude } }) => ({
